@@ -16,5 +16,16 @@
   "bugs": {
     "url": "https://github.com/gpjen95/Be_logUserMaster/issues"
   },
-  "homepage": "https://github.com/gpjen95/Be_logUserMaster#readme"
+  "homepage": "https://github.com/gpjen95/Be_logUserMaster#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-validator": "^6.14.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.19.0",
+    "sequelize-cli": "^6.4.1"
+  }
 }
