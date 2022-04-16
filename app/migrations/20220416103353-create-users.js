@@ -10,15 +10,22 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING(50),
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING(30),
+        allowNull: false,
       },
       phone: {
         type: Sequelize.STRING(15),
       },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       status: {
         type: Sequelize.ENUM("admin", "student", "teacher"),
+        allowNull: false,
       },
       isDelete: {
         type: Sequelize.BOOLEAN,
@@ -27,10 +34,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("now"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("now"),
       },
     });
   },
