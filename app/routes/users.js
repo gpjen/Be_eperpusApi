@@ -2,10 +2,22 @@ const express = require("express");
 const router = express.Router();
 
 // models users
-const { getUsers, getUserById, registerUser } = require("../controllers/Users");
+const {
+  getUsersAll,
+  getUserById,
+  registerUser,
+  updateUser,
+} = require("../controllers/Users");
+//validation Users
+const {
+  registerValidation,
+  paramIdvalidation,
+  usersUpdateValidation,
+} = require("../controllers/Users/UsersValidation");
 
-router.get("/users", getUsers);
-router.get("/user/:id", getUserById);
-router.post("/user", registerUser);
+router.get("/users", getUsersAll);
+router.get("/user/:id", paramIdvalidation, getUserById);
+router.post("/user", registerValidation, registerUser);
+router.patch("/user/:id", usersUpdateValidation, updateUser);
 
 module.exports = router;
