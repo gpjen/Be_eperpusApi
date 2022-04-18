@@ -1,5 +1,6 @@
 const { users } = require("../../models");
 const { body, param, validationResult } = require("express-validator");
+const { Op } = require("sequelize");
 
 const schema = {
   paramId: param("id")
@@ -9,7 +10,9 @@ const schema = {
     .bail()
     .custom(async (val) => {
       const userId = await users.findOne({
-        where: { id: val, isDelete: false },
+        where: {
+          [Op.and]: [{ id: val }, { isDelete: false }],
+        },
       });
       if (!userId) {
         return Promise.reject("invalid params Id");
@@ -30,7 +33,6 @@ const schema = {
     .withMessage("Email is required")
     .bail()
     .trim()
-    .normalizeEmail()
     .isEmail()
     .withMessage("The email canot valid")
     .bail()
@@ -39,9 +41,7 @@ const schema = {
       if (userEmail) return Promise.reject("email already in use");
     }),
   phone: body("phone")
-    .notEmpty()
-    .withMessage("Phone is required")
-    .bail()
+    .optional({ nullable: true })
     .isString()
     .trim()
     .withMessage("The phone must be string")
@@ -69,6 +69,50 @@ const schema = {
     .trim()
     .isIn(["admin", "teacher", "student"])
     .withMessage("status user invalid"),
+  emailUpdate: body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .trim()
+    .isEmail()
+    .withMessage("The email canot valid")
+    .bail()
+    .custom(async (email, { req }) => {
+      const { id } = req.params;
+      const user = await users.findOne({ where: { id } });
+      if (user.email !== email) {
+        const userEmail = await users.findOne({ where: { email } });
+        if (userEmail) return Promise.reject("email already in use");
+      }
+    }),
+  phoneUpdate: body("phone")
+    .notEmpty()
+    .withMessage("Phone is required")
+    .bail()
+    .isString()
+    .trim()
+    .withMessage("The phone must be string")
+    .bail()
+    .isLength({ min: 10 })
+    .withMessage("minimum phone length 10")
+    .matches(/^[0-9\+-]+\.?\s?([0-9]+\.?\s?)+$/)
+    .withMessage("Phone number not falid")
+    .bail()
+    .custom(async (phone, { req }) => {
+      const { id } = req.params;
+      const user = await users.findOne({ where: { id } });
+      if (user.phone !== phone) {
+        const userPhone = await users.findOne({ where: { phone } });
+        if (userPhone) return Promise.reject("Phone already in use");
+      }
+    }),
+  passwordUpdate: body("password")
+    .optional({ nullable: true })
+    .isLength({ min: 6 })
+    .withMessage("minimum password is 6 character")
+    .bail()
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/)
+    .withMessage("Password must contain uppercase, lowercase and numbers"),
 };
 
 //validation userregistration
@@ -111,11 +155,10 @@ exports.paramIdvalidation = [
 exports.usersUpdateValidation = [
   schema.paramId,
   schema.name,
-  schema.email,
-  schema.phone,
-  schema.password,
+  schema.emailUpdate,
+  schema.phoneUpdate,
+  schema.passwordUpdate,
   schema.status,
-  body(),
   (req, res, next) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
