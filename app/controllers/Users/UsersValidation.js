@@ -176,7 +176,7 @@ exports.usersUpdateValidation = [
       return res.status(400).json({
         status: "failed",
         message: "validation update user",
-        error: "no data update",
+        error: "no data update send",
       });
     }
 

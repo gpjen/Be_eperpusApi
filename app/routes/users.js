@@ -7,6 +7,7 @@ const {
   getUserById,
   registerUser,
   updateUser,
+  deleteUserById,
 } = require("../controllers/Users");
 //validation Users
 const {
@@ -19,5 +20,6 @@ router.get("/users", getUsersAll);
 router.get("/user/:id", paramIdvalidation, getUserById);
 router.post("/user", registerValidation, registerUser);
 router.patch("/user/:id", usersUpdateValidation, updateUser);
+router.delete("/user/:id", paramIdvalidation, deleteUserById);
 
 module.exports = router;

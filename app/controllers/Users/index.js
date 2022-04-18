@@ -93,3 +93,22 @@ exports.updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+// SOFT - DELETE USER BY ID
+
+exports.deleteUserById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const data = await users.findOne({ where: { id } });
+    data.isDelete = true;
+    data.save();
+    res.status(200).json({
+      staus: "success",
+      message: "soft delete users data",
+      data: `${data.email} has deleted`,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
