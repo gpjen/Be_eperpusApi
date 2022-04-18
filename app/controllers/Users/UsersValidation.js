@@ -69,9 +69,22 @@ const schema = {
     .trim()
     .isIn(["admin", "teacher", "student"])
     .withMessage("status user invalid"),
+  nameUpdate: body("name")
+    .optional({ nullable: true })
+    .trim()
+    .toLowerCase()
+    .isLength({ min: 3 })
+    .withMessage("The name is to short")
+    .matches(/^[a-zA-Z]+\.?\s?([a-zA-Z]+\.?\s?)+$/)
+    .withMessage("The name cannot contain numbers"),
+  statusUpdate: body("status")
+    .optional({ nullable: true })
+    .toLowerCase()
+    .trim()
+    .isIn(["admin", "teacher", "student"])
+    .withMessage("status user invalid"),
   emailUpdate: body("email")
-    .notEmpty()
-    .withMessage("Email is required")
+    .optional({ nullable: true })
     .bail()
     .trim()
     .isEmail()
@@ -86,8 +99,7 @@ const schema = {
       }
     }),
   phoneUpdate: body("phone")
-    .notEmpty()
-    .withMessage("Phone is required")
+    .optional({ nullable: true })
     .bail()
     .isString()
     .trim()
@@ -154,13 +166,22 @@ exports.paramIdvalidation = [
 //validation users UPDATE
 exports.usersUpdateValidation = [
   schema.paramId,
-  schema.name,
+  schema.nameUpdate,
   schema.emailUpdate,
   schema.phoneUpdate,
   schema.passwordUpdate,
-  schema.status,
+  schema.statusUpdate,
   (req, res, next) => {
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        status: "failed",
+        message: "validation update user",
+        error: "no data update",
+      });
+    }
+
     const error = validationResult(req);
+
     if (!error.isEmpty()) {
       return res.status(400).json({
         status: "failed",
