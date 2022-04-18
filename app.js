@@ -1,6 +1,7 @@
 require("dotenv/config");
 const express = require("express");
 const morgan = require("morgan");
+const { sequelize } = require("./app/models");
 
 //routes
 const userRoutes = require("./app/routes/users");
@@ -41,6 +42,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
+  try {
+    await sequelize.authenticate();
+    console.log(`Success connect database`);
+  } catch (error) {
+    console.log(error.message);
+  }
   console.log(`server running on port ${port}`);
 });
