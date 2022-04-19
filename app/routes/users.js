@@ -17,8 +17,11 @@ const {
   usersUpdateValidation,
 } = require("../controllers/Users/UsersValidation");
 
+// authtencicate
+const { authToken } = require("../midleware/auth");
+
 router.post("/login", loginUser);
-router.get("/users", getUsersAll);
+router.get("/users", authToken, getUsersAll);
 router.get("/user/:id", paramIdvalidation, getUserById);
 router.post("/register", registerValidation, registerUser);
 router.patch("/user/:id", usersUpdateValidation, updateUser);
