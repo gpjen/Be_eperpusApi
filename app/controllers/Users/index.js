@@ -58,7 +58,6 @@ exports.loginUser = async (req, res, next) => {
     // web token
     const dataPayload = { id: user.id, status: user.status };
     const token = jwt.sign(dataPayload, process.env.APP_SECRET_KEY);
-    console.log(process.env.APP_SECRET_KEY);
 
     res.status(200).json({
       status: "success",
