@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 
-const { users } = require("../../models");
+const { users, books } = require("../../models");
 
 // CREATE USER (REGISTER)
 
@@ -75,6 +75,10 @@ exports.loginUser = async (req, res, next) => {
 exports.getUsersAll = async (req, res, next) => {
   try {
     const data = await users.findAll({
+      include: {
+        model: books,
+        as: "books",
+      },
       attributes: {
         exclude: ["createdAt", "updatedAt", "isDelete", "password"],
       },
