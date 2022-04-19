@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 
 const { users } = require("../../models");
 
@@ -25,6 +26,48 @@ exports.registerUser = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error.message);
+    next(error);
+  }
+};
+
+// USER LOGIN
+
+exports.loginUser = async (req, res, next) => {
+  const { emailOrPhone, password } = req.body;
+  try {
+    // find user email or phone
+    const user = await users.findOne({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "isDelete"],
+      },
+      where: {
+        [Op.or]: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+        [Op.and]: [{ isDelete: false }],
+      },
+    });
+
+    // verify user password
+    const passCompare = await bcrypt.compare(password, user.password);
+
+    if (!user || !passCompare)
+      return res.status(400).json({
+        staus: "failed",
+        message: "email and password desnt match",
+      });
+
+    // web token
+    const dataPayload = { id: user.id, status: user.status };
+    const token = jwt.sign(dataPayload, process.env.APP_SECRET_KEY);
+    console.log(process.env.APP_SECRET_KEY);
+
+    res.status(200).json({
+      status: "success",
+      message: "user login",
+      user: { name: user.name, email: user.email },
+      token,
+    });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };

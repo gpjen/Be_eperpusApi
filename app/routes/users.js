@@ -8,6 +8,7 @@ const {
   registerUser,
   updateUser,
   deleteUserById,
+  loginUser,
 } = require("../controllers/Users");
 //validation Users
 const {
@@ -16,9 +17,10 @@ const {
   usersUpdateValidation,
 } = require("../controllers/Users/UsersValidation");
 
+router.post("/login", loginUser);
 router.get("/users", getUsersAll);
 router.get("/user/:id", paramIdvalidation, getUserById);
-router.post("/user", registerValidation, registerUser);
+router.post("/register", registerValidation, registerUser);
 router.patch("/user/:id", usersUpdateValidation, updateUser);
 router.delete("/user/:id", paramIdvalidation, deleteUserById);
 
