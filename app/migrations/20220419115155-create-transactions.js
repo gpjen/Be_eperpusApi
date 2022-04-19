@@ -17,7 +17,7 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      idStudent: {
+      idVisitor: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
