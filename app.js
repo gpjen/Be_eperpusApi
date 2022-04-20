@@ -5,6 +5,7 @@ const { sequelize } = require("./app/models");
 
 //routes
 const userRoutes = require("./app/routes/users");
+const bookRoutes = require("./app/routes/books");
 
 const port = process.env.APP_PORT || 3002;
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 //router
 const apiUrl = "/api/v1";
 app.use(apiUrl, userRoutes);
+app.use(apiUrl, bookRoutes);
 
 app.get("/test", (req, res) => {
   res.json({
