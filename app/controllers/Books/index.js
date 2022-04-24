@@ -2,19 +2,24 @@ const { Op } = require("sequelize");
 const { books, categories, books_categories } = require("../../models");
 
 // function collections
-async function findCategory(categor) {
-  let find = await categories.findAll({
-    where: { name: { [Op.in]: [categor] } },
-  });
-  find = find.map((value) => value.name);
+async function findOrCreateCategories(arrayCategory, booksId) {
+  const resultCategory = await Promise.all(
+    arrayCategory.map((value) => {
+      return categories.findOrCreate({
+        where: {
+          name: value,
+        },
+      });
+    })
+  );
 
-  const newCategory = categor.filter((value) => {
-    if (!find.includes(value)) {
-      categories.create({ name: value });
-      return value;
-    }
+  resultCategory.forEach((value) => {
+    const categoriesId = value[0].id;
+    books_categories.create({
+      booksId,
+      categoriesId,
+    });
   });
-  return newCategory;
 }
 
 // Create Books
@@ -23,7 +28,7 @@ exports.createBook = async (req, res, next) => {
   const userId = req.user.id;
 
   try {
-    //create books
+    // create books
     const newBook = await books.create({
       title,
       author,
@@ -34,10 +39,12 @@ exports.createBook = async (req, res, next) => {
       userId,
     });
 
+    // find or crate categories
+    findOrCreateCategories(category, newBook.id);
+
     res.status(201).json({
       status: "success",
-      message: "create books",
-      newBook,
+      message: "create a new books",
     });
   } catch (error) {
     console.log(error.message);

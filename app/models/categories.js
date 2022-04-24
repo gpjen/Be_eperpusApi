@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "books",
         through: {
           as: "bridge",
-          model: "books_categoies",
+          model: "books_categories",
         },
         foreignKey: "categoriesId",
       });
