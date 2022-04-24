@@ -51,3 +51,31 @@ exports.createBook = async (req, res, next) => {
     next(error);
   }
 };
+
+// read books and asociate
+exports.getBooks = async (req, res, next) => {
+  try {
+    const data = await books.findAll({
+      include: {
+        model: categories,
+        as: "categories",
+        attributes: ["id", "name"],
+        through: {
+          attributes: [],
+        },
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "get books data",
+      data: data.length > 0 ? data : "no data books",
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
