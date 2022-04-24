@@ -16,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       books.belongsToMany(models.categories, {
-        as: "user",
+        as: "categories",
         through: {
-          model: "booksCategory",
+          model: "books_categoies",
           as: "bridge",
         },
         foreignKey: "booksId",
