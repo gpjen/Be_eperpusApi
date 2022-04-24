@@ -79,3 +79,27 @@ exports.getBooks = async (req, res, next) => {
     next(error);
   }
 };
+
+// get book by Id
+
+exports.getBookById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const data = await books.findOne({
+      where: { id },
+      include: {
+        model: categories,
+        as: "categories",
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "get data by id",
+      data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
