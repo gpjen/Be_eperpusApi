@@ -5,10 +5,16 @@ const router = require("express").Router();
 const { authToken } = require("../midleware/auth");
 
 //import route
-const { createBook, getBooks, getBookById } = require("../controllers/Books");
+const {
+  createBook,
+  getBooks,
+  getBookById,
+  updateBooks,
+} = require("../controllers/Books");
 
-router.post("/books", authToken, createBook);
-router.get("/books", authToken, getBooks);
-router.get("/book/:id", authToken, getBookById);
+router.post("/books", authToken, createBook); //create
+router.get("/books", authToken, getBooks); //read all
+router.get("/book/:id", authToken, getBookById); //read One
+router.patch("/books/:id", authToken, updateBooks); //updaate
 
 module.exports = router;

@@ -81,7 +81,6 @@ exports.getBooks = async (req, res, next) => {
 };
 
 // get book by Id
-
 exports.getBookById = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -96,6 +95,49 @@ exports.getBookById = async (req, res, next) => {
     res.status(200).json({
       status: "success",
       message: "get data by id",
+      data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
+
+//update books by Id
+exports.updateBooks = async (req, res, next) => {
+  const { id } = req.params;
+  const { title, author, publisher, year, image, desc, category } = req.body;
+  try {
+    //update book
+    const data = await books.update(
+      {
+        title,
+        author,
+        publisher,
+        year,
+        image,
+        desc,
+      },
+      {
+        where: { id },
+      }
+    );
+
+    if (category.length > 0) {
+      // destroy books_categories
+      books_categories.destroy({
+        where: {
+          booksId: id,
+        },
+      });
+
+      // add new categories
+      findOrCreateCategories(category, id);
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "update data book",
       data,
     });
   } catch (error) {
