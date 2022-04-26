@@ -67,7 +67,20 @@ exports.createBookValidation = [
   },
 ];
 
-exports.readBookValidation = [
+// exports.updateBookValidation = [
+//   (req, res, next) => {
+//     const error = validationResult(req);
+//     if (!error.isEmpty())
+//       return res.status(400).json({
+//         status: "failed",
+//         message: "failed data validation",
+//         error: error.errors,
+//       });
+//     next();
+//   },
+// ];
+
+exports.updateBookValidation = [
   (req, res, next) => {
     const error = validationResult(req);
     if (!error.isEmpty())
