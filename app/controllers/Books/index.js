@@ -145,3 +145,19 @@ exports.updateBooks = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.deleteBook = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    //delete book async
+    books.destroy({ where: { id } });
+
+    res.status(200).json({
+      status: "success",
+      message: `delete book by id ${id}`,
+    });
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+};
