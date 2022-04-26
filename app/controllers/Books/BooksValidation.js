@@ -28,6 +28,13 @@ const schema = {
       .trim()
       .toLowerCase();
   }),
+  isNumberValue: ["year"].map((number) => {
+    return body(number)
+      .isNumeric()
+      .withMessage(`${number} must be number`)
+      .bail()
+      .trim();
+  }),
 };
 
 exports.paramIdValidation = [
@@ -47,15 +54,28 @@ exports.paramIdValidation = [
 
 exports.createBookValidation = [
   schema.isStringValue,
+  schema.isNumberValue,
   (req, res, next) => {
     const error = validationResult(req);
-    if (!error.isEmpty()) {
+    if (!error.isEmpty())
       return res.status(400).json({
         status: "failed",
         message: "failed data validation",
         error: error.errors,
       });
-    }
+    next();
+  },
+];
+
+exports.readBookValidation = [
+  (req, res, next) => {
+    const error = validationResult(req);
+    if (!error.isEmpty())
+      return res.status(400).json({
+        status: "failed",
+        message: "failed data validation",
+        error: error.errors,
+      });
     next();
   },
 ];
